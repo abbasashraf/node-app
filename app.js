@@ -2,8 +2,9 @@ var mongoose = require("mongoose");
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var app = express();
 
+var app = express();
+app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json(), function (err, req, res, next) {
     if (err) {
         return res.status(500).json({ error: err });
@@ -24,13 +25,20 @@ var patientSchema = mongoose.Schema({
     name: String,
     disease: String,
     treatment: String,
-    date:String,
+    date: String,
 })
 
 
 var patientModel = mongoose.model("patients", patientSchema);
 
+
+
 //------ schema ended -----
+
+
+app.get("/", function (req, res) {
+    res.send("Hello world!");
+});
 // -----acces controlled
 //------ create patients------
 app.post('/CREATEPATIENT', function (request, response) {
@@ -78,7 +86,7 @@ app.delete("/CREATEPATIENT/DELETE/:id", function (req, res) {
         if (err) {
             res.send(err)
         }
-        res.json(patients) 
+        res.json(patients)
         // res.json({ response: 'Deleted Successfully' });
     })
 })
@@ -110,8 +118,8 @@ mongoose.connection.on('disconnected', function () {
     console.log('Mongoose default connection disconnected');
 });
 
-app.listen(3000, function () {
-    console.log("Server run on port 3000")
+app.listen(app.get("port"), function () {
+    console.log("Server run on port " + app.get("port"))
 });
 
 
